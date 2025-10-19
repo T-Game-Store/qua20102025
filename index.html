@@ -6,8 +6,7 @@
     <title>Iu duyênn</title>
     <link rel="Shortcut Icon" href="https://i.pinimg.com/236x/a5/20/de/a520deb545fea9b62776e6bea5d77928.jpg"
         type="image/x-icon" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
         html {
             height: 100%;
@@ -20,11 +19,10 @@
             color: #FF69B4;
             /* Hot Pink as initial text color */
             font-size: 18px;
-            line-height: 2;
-            letter-spacing: 1.2px;
+            line-height: 1.8; /* Giảm line-height cho mobile */
+            letter-spacing: 1px; /* Giảm letter-spacing cho mobile */
             margin: 0;
             overflow: hidden;
-            /* Ngăn cuộn khi có overlay */
         }
 
         a {
@@ -44,11 +42,14 @@
         .text {
             position: fixed;
             bottom: 20px;
+            left: 0;
+            right: 0;
             text-align: center;
             width: 100%;
             font-weight: bold;
             font-size: 24px;
             text-shadow: 2px 2px 4px #000000;
+            z-index: 5; /* Đảm bảo chữ nằm trên nền canvas */
         }
 
         canvas {
@@ -60,14 +61,15 @@
 
         img#logo {
             width: 128px;
+            height: 128px; /* Thêm height để giữ tỷ lệ */
+            object-fit: cover;
             background-size: cover;
             border-radius: 200px;
             box-shadow: 0px 0px 40px rgba(255, 105, 180, 0.72);
             border: 3px solid #FF1493;
             opacity: 1;
-            margin: 0 auto;
-            margin-top: 20px;
-            margin-bottom: 20px;
+            margin: 20px auto;
+            display: block; /* Đảm bảo ảnh ở giữa */
             transition: all 1.0s;
         }
 
@@ -84,10 +86,10 @@
 
         .cs {
             width: 100%;
-            height: 100%;
-            margin: 0 auto;
-            position: absolute;
             text-align: center;
+            position: relative;
+            z-index: 1; /* Đảm bảo logo nằm trên canvas */
+            /* Đã loại bỏ height: 100% và absolute position để dễ responsive */
         }
 
         /* --- CSS MỚI CHO OVERLAY ẢNH --- */
@@ -97,8 +99,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(255, 255, 255, 0.5);
-            /* Nền mờ nhẹ */
+            background-color: rgba(255, 255, 255, 0.7);
+            /* Nền mờ nhẹ (đã tăng độ mờ) */
             backdrop-filter: blur(5px);
             /* Hiệu ứng làm mờ */
             -webkit-backdrop-filter: blur(5px);
@@ -120,20 +122,23 @@
         }
 
         .overlay-text {
-            color: #FF69B4;
-            /* Màu hồng nóng */
+            color: #FF1493;
+            /* Deep Pink */
             font-family: 'Comic Sans MS', cursive, sans-serif;
             /* Font đáng yêu */
             font-size: 36px;
             /* Kích thước chữ to */
             font-weight: bold;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            text-shadow: 2px 2px 5px rgba(255, 105, 180, 0.8); /* Shadow nổi bật hơn */
             margin-bottom: 20px;
+            padding: 0 10px; /* Thêm padding để chữ không bị sát mép */
+            text-align: center;
         }
 
         .gift-image {
-            max-width: 80%;
-            max-height: 80%;
+            max-width: 90%; /* Tăng max-width cho mobile */
+            max-height: 70%; /* Giảm max-height cho mobile */
+            height: auto;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(255, 105, 180, 0.8);
             /* Shadow hồng nổi bật */
@@ -142,18 +147,49 @@
             object-fit: contain;
             /* Đảm bảo ảnh hiển thị đầy đủ */
         }
+
+        /* ==================== MEDIA QUERIES CHO MOBILE ==================== */
+        @media (max-width: 600px) {
+            body {
+                font-size: 16px;
+                line-height: 1.6;
+            }
+            
+            img#logo {
+                width: 100px; /* Giảm kích thước logo */
+                height: 100px;
+                margin-top: 15px;
+                margin-bottom: 15px;
+            }
+
+            .text {
+                bottom: 10px; /* Giảm khoảng cách bottom */
+                font-size: 18px; /* Giảm kích thước chữ cuối cùng */
+                letter-spacing: 0.5px;
+            }
+            
+            .overlay-text {
+                font-size: 28px; /* Giảm kích thước chữ overlay */
+                margin-bottom: 15px;
+            }
+
+            .gift-image {
+                max-width: 95%; /* Tối ưu hóa không gian ảnh */
+                max-height: 60%;
+            }
+            
+            /* Điều chỉnh lại khoảng cách giữa các chấm trong chữ Matrix để phù hợp hơn với màn hình nhỏ */
+            /* Cần chỉnh trong JS (S.ShapeBuilder.gap) nhưng ta cố gắng giữ nguyên JS nếu có thể */
+        }
     </style>
 </head>
 
 <body>
     <div class="cs">
-        <img src="image.png"
-            id="logo">
+        <img src="image.png" alt="Ảnh cá nhân" id="logo">
     </div>
     <canvas id="rainCanvas"></canvas>
-    <canvas class="canvas" width="1820" height="905"></canvas>
-
-    <p class="text" style="color: #ed3073;">
+    <canvas class="canvas"></canvas> <p class="text" style="color: #ed3073;">
         20/10 này, chúc cậu vui vẻ, xinh đẹp hơn nữa, và mãi mãi là em bé của tớ nhé!
     </p>
 
@@ -166,52 +202,68 @@
     
 
     <script>
-        const canvas = document.getElementById('rainCanvas');
-        const ctx = canvas.getContext('2d');
+        // =========================================================
+        // RAIN CANVAS (Matrix style)
+        // =========================================================
+        const canvasRain = document.getElementById('rainCanvas');
+        const ctxRain = canvasRain.getContext('2d');
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+        function resizeRainCanvas() {
+            canvasRain.width = window.innerWidth;
+            canvasRain.height = window.innerHeight;
         }
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
+        resizeRainCanvas();
+        window.addEventListener('resize', resizeRainCanvas);
 
         const letters = 'I LOVE U'.split('');
-        const fontSize = 16;
-        let columns = Math.floor(window.innerWidth / fontSize);
-        const drops = Array(columns).fill(1);
+        const fontSizeRain = 16;
+        // Tính toán lại cột khi resize
+        let columns = Math.floor(window.innerWidth / fontSizeRain); 
+        // Đặt lại drops array khi resize hoặc khởi tạo
+        let drops = Array(columns).fill(1); 
+        
+        // Cần cập nhật drops và columns khi resize
+        window.addEventListener('resize', () => {
+             resizeRainCanvas();
+             columns = Math.floor(window.innerWidth / fontSizeRain);
+             drops = Array(columns).fill(1);
+        });
 
         function drawRainBackground() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = '#f584b7';
-            ctx.font = fontSize + 'px arial';
+            ctxRain.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctxRain.fillRect(0, 0, canvasRain.width, canvasRain.height);
+            ctxRain.fillStyle = '#f584b7';
+            ctxRain.font = fontSizeRain + 'px arial';
             for (let i = 0; i < drops.length; i++) {
                 const text = letters[Math.floor(Math.random() * letters.length)];
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                if (drops[i] * fontSize > canvas.height || Math.random() > 0.95) drops[i] = 0;
+                ctxRain.fillText(text, i * fontSizeRain, drops[i] * fontSizeRain);
+                if (drops[i] * fontSizeRain > canvasRain.height || Math.random() > 0.95) drops[i] = 0;
                 drops[i]++;
             }
         }
 
         setInterval(drawRainBackground, 50);
         
+        // =========================================================
+        // TEXT SHAPE ANIMATION
+        // =========================================================
+
         // Hàm hiển thị overlay
         function showGiftOverlay() {
             var overlay = document.getElementById('gift-overlay');
             // Thêm một độ trễ nhỏ để đảm bảo hiệu ứng chữ chấm dứt hoàn toàn
             setTimeout(() => { 
-                 overlay.classList.add('show');
+                overlay.classList.add('show');
             }, 300); 
-           
         }
 
         var S = {
             init: function () {
-                S.Drawing.init('.canvas');
+                // Đã đổi '.canvas' thành phần tử, đảm bảo nó là phần tử thứ 2
+                S.Drawing.init('.canvas'); 
                 document.body.classList.add('body--ready');
-                // Sửa lại chuỗi chữ chạy
-                S.UI.simulate("Chúc|cậu|20/10|vui vẻ|hạnh phúc|❤️");
+                // Chuỗi chữ chạy
+                S.UI.simulate("Chúc|cậu|20/10|vui vẻ|hạnh phúc|❤️"); 
                 S.Drawing.loop(function () {
                     S.Shape.render();
                 });
@@ -244,9 +296,10 @@
                     renderFn();
                     requestFrame.call(window, this.loop.bind(this));
                 },
+                // Đã sửa: Điều chỉnh kích thước canvas phụ thuộc vào cửa sổ
                 adjustCanvas: function () {
-                    canvas.width = window.innerWidth - 100;
-                    canvas.height = window.innerHeight - 30;
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
                 },
                 clearFrame: function () {
                     context.clearRect(0, 0, canvas.width, canvas.height);
@@ -317,8 +370,6 @@
                     value = getValue(current);
 
                     if (!current) {
-                         // **ĐÃ SỬA:** Loại bỏ điều kiện gọi showGiftOverlay() ở đây
-                         // Sẽ dựa vào callback cuối cùng của timedAction
                         if (step >= initialLength) {
                             S.Shape.switchShape(S.ShapeBuilder.letter('')); // Xóa hình cuối cùng
                             clearInterval(interval);
@@ -361,7 +412,7 @@
                     }
                     step++; // Tăng bước thực hiện
                 }, 2000, sequence.length, false, function () {
-                    // **ĐÃ SỬA:** Đây là callback CHẮC CHẮN được gọi khi chuỗi từ HOÀN TẤT
+                    // Đây là callback CHẮC CHẮN được gọi khi chuỗi từ HOÀN TẤT
                     showGiftOverlay();
                 });
             }
@@ -492,6 +543,7 @@
                 fontSize = 500,
                 fontFamily = 'Avenir, Helvetica Neue, Helvetica, Arial, sans-serif';
             function fit() {
+                // Đã sửa: Tính toán kích thước canvas dựa trên kích thước cửa sổ hiện tại
                 shapeCanvas.width = Math.floor(window.innerWidth / gap) * gap;
                 shapeCanvas.height = Math.floor(window.innerHeight / gap) * gap;
                 shapeContext.fillStyle = 'red';
@@ -680,8 +732,5 @@
         }());
         S.init();
     </script>
-   
-
 </body>
-
 </html>
